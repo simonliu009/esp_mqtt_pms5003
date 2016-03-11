@@ -11,4 +11,4 @@ Global format
     /LASS/(country code)/(state code)/(city code)/(device id)/(application name)
     
 For example,
-    /LASS/886/00/06/g500001/PM2.5
+    /LASS/886/00/06/g500001/pm2.5
