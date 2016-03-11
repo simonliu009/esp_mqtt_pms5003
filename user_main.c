@@ -70,7 +70,7 @@ void mqttConnectedCb(uint32_t *args)
 	INFO("MQTT: Connected\r\n");
 	MQTT_Subscribe(client, "/LASS/886/00/06/g500001/cmd", 0); //command channel
 	MQTT_Subscribe(client, "/mqtt/timestamp", 1);
-//	MQTT_Subscribe(client, "/mqtt/topic/2", 2);
+	MQTT_Subscribe(client, "/mqtt/echo", 2);
 
 //	MQTT_Publish(client, "/LASS/886/00/06/g500001/pm3", "hello0", 6, 0, 0);
 //	MQTT_Publish(client, "/LASS/886/00/06/g500001/alive", "hello1", 6, 1, 0);
@@ -94,7 +94,7 @@ void mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const cha
 {
 	char *topicBuf = (char*)os_zalloc(topic_len+1),
 			*dataBuf = (char*)os_zalloc(data_len+1);
-	uint8		*p ;      
+	uint8		*p, *q ;      
 
 	MQTT_Client* client = (MQTT_Client*)args;
 
@@ -106,9 +106,13 @@ void mqttDataCb(uint32_t *args, const char* topic, uint32_t topic_len, const cha
 
 	INFO("Receive topic: %s, data: %s \r\n", topicBuf, dataBuf);
   p=(uint8 *)os_strstr(topicBuf,"timestamp");
+  q=(uint8 *)os_strstr(topicBuf,"echo");
 //// modified for LASS  
   if(p){
       os_memcpy(&TIMESTAMP[0],dataBuf,10);
+  }
+  if(q){
+     MQTT_Publish(client, "/LASS/886/00/06/clientid", "g500001", 7, 1, 0); //// echo my client id for KML builder
   }
 //// define your own commands
   if(dataBuf[0]=='L'){
